@@ -3,7 +3,9 @@ use std::cmp::Ordering;
 use rand::Rng;
 use std::io::prelude::*;
 
-struct Character {
+mod page_reader;
+
+pub struct Character {
 	name: String,
 	skill: i32,
 	stamina: i32,
@@ -17,12 +19,14 @@ fn main() {
 	let mut player = create_character();
 	
 	print_character(&player);
-	
-	let mut goblin = create_goblin();
+  
+  let page_data = page_reader(1);
+  
+	//let mut goblin = create_goblin();
 	
 	pause();
 	
-	Battle(&mut player, &mut goblin);
+	//Battle(&mut player, &mut goblin);
 }
 
 fn print_character(x: &Character) {

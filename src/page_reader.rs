@@ -1,3 +1,4 @@
+use std::fs;
 
 struct PageResult {
   nextPage : u32,
@@ -16,20 +17,23 @@ struct PageData {
 fn read_page(page : u32) -> PageData {
   
   //Parse text file
+  let filename = concat!(page.to_string(), ".txt");
+  let contents = fs::read_to_string(filename)
+    .expect("Something went wrong reading the page!");
+   
+  let contentVec: Vec<&str> = contents.split("*").collect();
   
-  // page_text = get text from file
-  // page_options = get_options_from_file
-  // page_battle_initiated = get_battle_initiated_from_file
-  // page_enemy = get_enemy_type_from_file
+  page_options: Vec<i32> = 
+    contentVec[1].split(",").map(|x| x.parse::<i32>().unwrap()).collect();
   
-  /*
+  page_battle_initiated = if contentVec[2] == True { true } else { false }
+  
   PageData {
-    text : page_text,
+    text : contentVec[0],
     nextPageOptions : page_options,
     battleInitiated : page_battle_initiated
-    enemy : page_enemy
+    enemy : contentVec[3]
   }
-  */  
 }
 
 fn process_page(page : PageData) -> PageResult {
@@ -60,8 +64,25 @@ fn process_page(page : PageData) -> PageResult {
   
   let selection = selection_str.trim().parse::<u32>().unwrap();
   
+  if page.nextPageOptions.len() == 0 {
+    //GAME OVER.
+    
+    let enemy = Character {
+      name: String::from("TestingFileReader"),
+      skill: 0,
+      stamina: 0,
+      luck: 0,
+      provisions: 0
+    }		
+    
+    PageResult {
+      nextPage : -1,
+      enemy : enemy
+    }
+  }
+  
   //Construct and return some object indicating the next page to be read.
-  if page.nextPageOptions.contains(selection) {  
+  else if page.nextPageOptions.contains(selection) {  
     let enemy = Character {
       name: String::from("TestingFileReader"),
       skill: 0,
